@@ -34,11 +34,10 @@ jobs:
       - name: Build
         run: npm run build
 
-      # 推 v* tag 时发布到 GitHub Release，其余情况只产出 artifact
+      # 构建阶段不直接发布——多平台并发 publish 同一 Release 会互相覆盖资产
       - name: Package
-        run: npx electron-builder ${{ matrix.args }} --publish ${{ startsWith(github.ref, 'refs/tags/v') && 'always' || 'never' }}
+        run: npx electron-builder ${{ matrix.args }} --publish never
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - uses: actions/upload-artifact@v4
@@ -47,4 +46,25 @@ jobs:
           path: |
             dist/*.dmg
             dist/*.exe
-          if-no-files-found: ignore
+          if-no-files-found: error
+
+  # 推 v* tag 时，由单一任务汇总所有平台产物并发布 Release
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la artifacts/
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" --generate-notes artifacts/* \
+          || gh release upload "$GITHUB_REF_NAME" artifacts/* \
+            --repo "$GITHUB_REPOSITORY" --clobber
