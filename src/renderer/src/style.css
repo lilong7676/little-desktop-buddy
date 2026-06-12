@@ -1,0 +1,208 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+#stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#pet {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%);
+  animation: breathe 3.2s ease-in-out infinite;
+  transition: filter 0.25s;
+  -webkit-user-drag: none;
+  user-select: none;
+  cursor: grab;
+}
+
+#pet:hover {
+  filter: brightness(1.06);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleY(1);
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.018) scaleX(1.005);
+  }
+}
+
+/* 播放 AI 动图时关闭呼吸变换，由动图自己动 */
+body.flourish #pet {
+  animation: none;
+}
+
+/* 拖拽：歪头被拎起来 */
+body.dragging #pet {
+  animation: none;
+  transform: translateX(-50%) rotate(5deg) scale(1.04);
+  cursor: grabbing;
+}
+
+/* 睡觉：变暗 + 慢呼吸 + Zzz */
+body.sleep #pet {
+  filter: saturate(0.7) brightness(0.9);
+  animation: breathe 5.5s ease-in-out infinite;
+}
+
+body.sleep #zzz {
+  display: block;
+}
+
+#zzz {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 12%;
+  pointer-events: none;
+}
+
+#zzz span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  animation: zfloat 2.8s ease-out infinite;
+}
+
+#zzz span:nth-child(2) {
+  font-size: 13px;
+  animation-delay: 0.9s;
+}
+
+#zzz span:nth-child(3) {
+  font-size: 10px;
+  animation-delay: 1.8s;
+}
+
+@keyframes zfloat {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -34px);
+  }
+}
+
+/* 散步：摇摆 + 起伏 */
+body.walking #pet {
+  animation: waddle 0.55s ease-in-out infinite;
+}
+
+@keyframes waddle {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-2.5deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(2.5deg) translateY(-2px);
+  }
+}
+
+/* 被摸：开心一缩 */
+body.react #pet {
+  animation: squish 0.35s ease-out;
+}
+
+@keyframes squish {
+  0% {
+    transform: translateX(-50%) scaleY(1);
+  }
+  40% {
+    transform: translateX(-50%) scaleY(0.92) scaleX(1.06);
+  }
+  100% {
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+.heart {
+  position: absolute;
+  bottom: 70%;
+  font-size: 14px;
+  pointer-events: none;
+  animation: heartfloat 0.9s ease-out forwards;
+}
+
+/* 说话气泡 */
+#bubble {
+  display: none;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 92%;
+  background: rgba(255, 255, 255, 0.95);
+  color: #3a3a3a;
+  font:
+    12px/1.5 -apple-system,
+    'PingFang SC',
+    sans-serif;
+  padding: 3px 10px;
+  border-radius: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#bubble.show {
+  display: block;
+  animation: bubblepop 0.22s ease-out;
+}
+
+@keyframes bubblepop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* 被扔出去：空中翻滚 */
+body.thrown #pet {
+  animation: tumble 0.5s ease-in-out infinite;
+}
+
+@keyframes tumble {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-9deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(9deg) translateY(-3px);
+  }
+}
+
+@keyframes heartfloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-44px) scale(1.15);
+  }
+}

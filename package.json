@@ -1,0 +1,23 @@
+{
+  "name": "little-desktop-buddy",
+  "productName": "Little Desktop Buddy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "两只猫咪（淘淘 & 墨墨）的桌面宠物：吸附、散步、睡觉、合体、AI 动画",
+  "author": "lilong7676",
+  "repository": "github:lilong7676/little-desktop-buddy",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "dist:mac": "electron-vite build && electron-builder --mac",
+    "dist:win": "electron-vite build && electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.2",
+    "electron-vite": "^5.0.0",
+    "typescript": "^6.0.3"
+  }
+}
